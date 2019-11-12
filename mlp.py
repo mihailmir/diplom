@@ -8,16 +8,14 @@ from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
 from peewee import SqliteDatabase
+import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import pickle
 import argparse
 
 SQLITE_DB = SqliteDatabase(
-        'source data/source_bd.db', pragmas={
-            'journal_mode': 'wal',
-            'cache_size': -1024 * 64
-        }
+        'source data/source_bd.db'
     )
 
 
@@ -79,7 +77,7 @@ def read_input_data(path):
     # print(data)
     csv_params = data.head()
 
-    if len(input_params) != len(csv_params.keys()) or set(input_params) != set(data.keys()):
+    if set(input_params) != set(data.keys()):
         sys.exit('Unexpected input values, expect {}.'.format(', '.join(input_params)))
 
     for col in data.head():
@@ -132,7 +130,6 @@ def train_model(path):
         callbacks=[checkpointer]
     )
 
-    #score = model.evaluate(X_test, to_categorical(y_test), batch_size=128)
     hist_df = pd.DataFrame(history.history)
     hist_csv_file = 'Training history.csv'
     with open(hist_csv_file, mode='w') as f:
@@ -143,19 +140,27 @@ def train_model(path):
 def predict_classes(model, data):
     with open('encoders/class_encoder.pkl', 'rb') as f:
         class_encoder = pickle.load(f)
-    import matplotlib.pyplot as plt
-    classes = model.predict_classes(data)
-    y = [i for i in range(len(data))]
+    print(model.predict_classes(data))
 
-    ax = plt.gca()
-    ax.bar(class_encoder.inverse_transform(classes), y)
+    # c = INPUT_PARAMETERS.copy()
+    # c.remove('class')
+    #
+    # data = data.to_numpy()
+    # x_axis = data[:, 0]
+    # y_axis = data[:, 1]
+    # print(x_axis)
+    # # Построение
+    # plt.xlabel('1')
+    # plt.ylabel('2')
+    # plt.scatter(x_axis, y_axis, c=c)
+    # plt.show()
 
-
-    #plt.hist(class_encoder.inverse_transform(classes), y, bins=50)
-    #plt.hist(, bins=50)
-
+    data = pd.read_csv('Training history.csv')
+    plt.title('Loss / Mean Squared Error')
+    plt.plot(data['loss'], label='loss')
+    plt.plot(data['acc'], label='acc')
+    plt.legend()
     plt.show()
-    print(class_encoder.inverse_transform(classes))
 
 
 def load_trained_model(path):
