@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from mlp import SQLITE_DB, INPUT_PARAMETERS
+from config import SQLITE_DB, INPUT_PARAMETERS
 
 
 try:
@@ -97,7 +97,7 @@ class UiDialog(QtWidgets.QWidget):
         self.label_5.setGeometry(QtCore.QRect(30, 170, 81, 16))
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.label_6 = QtWidgets.QLabel(Dialog)
-        self.label_6.setGeometry(QtCore.QRect(30, 210, 81, 16))
+        self.label_6.setGeometry(QtCore.QRect(30, 200, 81, 16))
         self.error_dialog = QtWidgets.QErrorMessage()
 
         font = QtGui.QFont()

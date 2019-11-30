@@ -2,30 +2,17 @@ import pandas as pd
 from keras import Sequential
 from keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
 from keras.utils import to_categorical
 from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
-from peewee import SqliteDatabase
+from config import INPUT_PARAMETERS, SQLITE_DB, EPOCH_COUNT, ENCODERS, MODEL_NAME
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import pickle
 import argparse
 
-SQLITE_DB = SqliteDatabase(
-        'source data/source_bd.db'
-    )
-
-
-MODEL_NAME = 'Trained model.h5'
-DATA_FOR_TRAIN = 'source data/car.data'
-EPOCH_COUNT = 2000
-INPUT_PARAMETERS = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
-ENCODERS = {
-        param: preprocessing.LabelEncoder() for param in INPUT_PARAMETERS
-    }
 
 
 def read_input_data(path):

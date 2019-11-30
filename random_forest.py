@@ -1,4 +1,4 @@
-from mlp import SQLITE_DB, INPUT_PARAMETERS, ENCODERS
+from config import SQLITE_DB, INPUT_PARAMETERS, ENCODERS
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
