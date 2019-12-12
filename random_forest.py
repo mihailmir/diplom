@@ -1,7 +1,7 @@
 from config import SQLITE_DB, INPUT_PARAMETERS, ENCODERS
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
+from plot import plot_waffle, plot_feature_importances_
 import numpy as np
 import argparse
 import pandas as pd
@@ -25,24 +25,11 @@ def random_forest_cl(path):
     for param in data.head():
         data[param] = encoders[param].transform(data[param])
 
-    importances = model.feature_importances_
-    indices = np.argsort(importances)[::-1]
-    print(model.score(X_test, y_test))
-
-    plt.figure()
-    plt.title("Feature importances")
-    names_indices = ['x_coor', 'y_coor']
-    names_indices = [param for param in input_params]
-    plt.bar(range(len(importances)), importances, color="r")
-    plt.xticks(range(len(importances)), names_indices, rotation=90)
-
-    plt.tight_layout()
-    plt.xlim([-1, len(importances)])
-    plt.show()
-
-    # data = data.to_numpy()
-    # plt.scatter(data[:, 0], data[:, 1], c=model.predict(data))
-    # plt.show()
+    class_encoder = encoders['class']
+    plot_waffle(data_vehicle, class_encoder)
+    plot_feature_importances_(model)
+    classes = class_encoder.inverse_transform(model.predict(data))
+    print(classes)
 
 
 if __name__ == '__main__':

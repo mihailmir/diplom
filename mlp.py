@@ -7,12 +7,11 @@ from keras.optimizers import SGD
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
 from config import INPUT_PARAMETERS, SQLITE_DB, EPOCH_COUNT, ENCODERS, MODEL_NAME
-import matplotlib.pyplot as plt
+from plot import plot_loss_acc
 import numpy as np
 import sys
 import pickle
 import argparse
-
 
 
 def read_input_data(path):
@@ -62,7 +61,6 @@ def read_input_data(path):
     except FileNotFoundError:
         sys.exit('Input data for classification not found.')
     # print(data)
-    csv_params = data.head()
 
     if set(input_params) != set(data.keys()):
         sys.exit('Unexpected input values, expect {}.'.format(', '.join(input_params)))
@@ -127,27 +125,9 @@ def train_model(path):
 def predict_classes(model, data):
     with open('encoders/class_encoder.pkl', 'rb') as f:
         class_encoder = pickle.load(f)
-    print(model.predict_classes(data))
-
-    # c = INPUT_PARAMETERS.copy()
-    # c.remove('class')
-    #
-    # data = data.to_numpy()
-    # x_axis = data[:, 0]
-    # y_axis = data[:, 1]
-    # print(x_axis)
-    # # Построение
-    # plt.xlabel('1')
-    # plt.ylabel('2')
-    # plt.scatter(x_axis, y_axis, c=c)
-    # plt.show()
-
+    print(class_encoder.inverse_transform(model.predict_classes(data)))
     data = pd.read_csv('Training history.csv')
-    plt.title('Loss / Mean Squared Error')
-    plt.plot(data['loss'], label='loss')
-    plt.plot(data['acc'], label='acc')
-    plt.legend()
-    plt.show()
+    plot_loss_acc(data)
 
 
 def load_trained_model(path):
